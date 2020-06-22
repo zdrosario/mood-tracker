@@ -1,0 +1,135 @@
+#:kivy 1.11.1
+
+# COLORS
+#: set eggshell [0.976,0.969,0.929,1]
+#: set charcoal [0.216,0.227,0.216,1]
+#: set charcoal_transparent [0.216,0.227,0.216,0.5]
+#: set dark_teal [0.204,0.404,0.475,1]
+
+# FONTS
+#:set fredoka 'fonts/FredokaOne-Regular.ttf'
+#:set opensans_eb 'fonts/OpenSans-ExtraBold.ttf'
+#:set opensans_l 'fonts/OpenSans-Light.ttf'
+#:set opensans_sb 'fonts/OpenSans-SemiBold.ttf'
+
+<Label>:
+    color: charcoal
+
+<Button>:
+    background_normal: 'assets/nav.png'
+    background_down: 'assets/nav_click.png'
+    background_disabled_normal: 'assets/nav_disabled.png'
+    background_disabled_down: 'assets/nav_disabled.png'
+
+    font_name: fredoka
+    font_size: '24pt'
+    color: eggshell
+
+<NavButton@Button>:
+    size_hint_x: None
+    width: self.height
+    font_size: '30pt'
+
+<TextInput>:
+    background_normal: 'assets/input.png'
+    background_active: 'assets/input.png'
+    
+    font_name: opensans_l
+    font_size: '20pt'
+    halign: 'center'
+    cursor_color: dark_teal
+
+#:import CalendarWidget ui.calWidget.CalendarWidget
+#:import CalBox ui.calWidget.CalBox
+
+<CalendarWidget>:
+    spacing: 5
+    cols: 7
+    rows: 6
+
+<CalBox>:
+    background_normal: ''
+    background_down: ''
+    background_disabled_normal: ''
+    background_color: eggshell
+    on_press: self.attempt_popup()
+    color: charcoal
+    disabled_color: charcoal
+
+#:import PopupGrid ui.editRatePopup.PopupGrid
+#:import EditRatePopup ui.editRatePopup.EditRatePopup
+#:import PopupMoodLabel ui.editRatePopup.PopupMoodLabel
+#:import RateInput ui.editRatePopup.RateInput
+
+<PopupGrid>:
+    cols: 2
+    rows: len(self.mood_cats)+1
+    padding: 5
+    spacing: 5
+
+<EditRatePopup>:
+    on_dismiss:
+        self.content.save_rates()
+        self.cal_box.update_box()
+
+    background: 'assets/modal.png'
+    background_color: charcoal_transparent
+    separator_color: dark_teal
+
+    title_align: 'center'
+    title_color: charcoal
+    title_font: fredoka
+    title_size: '28pt'
+
+    size_hint: .8,.8
+
+<PopupMoodLabel>:
+    font_name: opensans_sb
+    font_size: '24pt'
+
+<RateInput>:
+    on_text_validate: self.save()
+    multiline: False
+
+    size_hint_x: 0.3
+    padding_y: (self.height-40)/2
+
+#:import MenuRow ui.menuScreen.MenuRow
+#:import RateLabel ui.menuScreen.RateLabel
+#:import MenuMoodLabel ui.menuScreen.MenuMoodLabel
+
+<MenuRow>:
+    cols: 5
+    rows: 1
+    spacing: 8
+
+    size_hint_y: None
+    height: 50
+
+<RateLabel>:
+    size_hint_x: 0.5
+    font_name: opensans_l
+    font_size: '12pt'
+
+<MenuMoodLabel>:
+    font_name: opensans_sb
+    font_size: '12pt'
+    text_size: self.size
+    halign: 'left'
+    valign: 'middle'
+
+<MenuHeading@Label>:
+    size_hint_x: 0.5
+
+    font_name: fredoka
+    font_size: '12pt'
+    halign: 'center'
+
+#:import CalViewToggle ui.calViewSelect.CalViewToggle
+
+<CalViewToggle>:
+    on_press: self.switch_views()
+
+    source: 'assets/unselected.png'
+    size_hint_x: None
+    width: self.height

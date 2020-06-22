@@ -1,0 +1,114 @@
+#:kivy 1.11.1
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+
+#:import MenuGrid ui.menuScreen.MenuGrid
+#:import ViewScreenGrid ui.viewScreen.ViewScreenGrid
+#:import config data.config
+
+#:include styles.kv
+
+<MTScreenManager>:
+    transition: NoTransition()
+
+    view_screen_grid: view_screen_grid
+    menu_grid: menu_grid
+
+    Screen:
+        name: 'View Data'
+
+        ViewScreenGrid:
+            id: view_screen_grid
+            month_label: month_label
+
+            spacing: 16
+            padding: 8
+            rows: 2
+
+            canvas:
+                Color:
+                    rgb: 0.976,0.969,0.929
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            GridLayout:
+                cols: 4
+                size_hint_y: None
+                height: 50
+                spacing: 8
+
+                NavButton:
+                    on_press:
+                        view_screen_grid.prev_month()
+                        next_month.disabled = False
+                    
+                    text: '<'
+
+                MonthLabel:
+                    id: month_label
+                    text: 'temp'
+
+                    font_name: fredoka
+                    font_size: '24pt'
+
+                NavButton:
+                    text: '.'
+                    on_press: root.current = 'Menu'
+                NavButton:
+                    id: next_month
+                    disabled: True
+                    text: '>'
+                    on_press:
+                        self.disabled = (view_screen_grid.next_month())
+
+    Screen:
+        name: 'Menu'
+
+        MenuGrid:
+            id: menu_grid
+            cols: 1
+            rows: 6
+            spacing: 16
+            padding: 8
+
+            canvas:
+                Color:
+                    rgb: 0.976,0.969,0.929
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Color:
+                    rgb: 0.216,0.227,0.216
+                Line:
+                    points: 16, self.top-66, self.width - 16, self.top-66
+                    width: 1
+                Line:
+                    points: 16, self.top-330, self.width - 16, self.top-330
+                    width: 1
+
+            GridLayout:
+                id: menu_header
+                cols: 5
+                rows: 1
+                spacing: 8
+
+                size_hint_y: None
+                height: 50
+
+                NavButton:
+                    id: view_cal_button
+                    text: '<'
+                    on_press:
+                        root.current = 'View Data'
+                        view_screen_grid.redraw_cal()
+                
+                MenuMoodLabel:
+                    text: 'Mood'
+                    font_name: fredoka
+                    font_size: '20pt'
+                MenuHeading:
+                    text: 'Total\nAvrg'
+                MenuHeading:
+                    text: '30 Day\nAvrg'
+                MenuHeading:
+                    text: 'Weight'

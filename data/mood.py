@@ -31,7 +31,10 @@ class Mood:
         self.df.loc[date, 'overall'] = self.get_overall(self.df.loc[date])
 
     def get_rate(self, mood, date):
-        return self.df.loc[date, mood]
+        try:
+            return self.df.loc[date, mood]
+        except:
+            return np.nan
 
     def get_overall(self, row):
         # get_overall: dictionary -> float
@@ -67,9 +70,13 @@ class Mood:
         today = pd.Timestamp.today().floor('D')
         month_diff = pd.Timedelta(days=30)
         last_month = today - month_diff
+        if last_month not in self.df.index:
+            self.update_rate('overall', last_month, np.nan)
         
+        self.df = self.df.sort_index()
         sliced_df = self.df.loc[last_month:today]
-        return sliced_df[mood].mean()
+        sliced_df = sliced_df[mood].dropna()
+        return sliced_df.mean()
 
     def populate_month(self, year, month):
         # ensures there is an entry for each day of the month in self.df
@@ -81,3 +88,4 @@ class Mood:
             date = pd.Timestamp(year,month,day)
             if date in self.df.index: continue
             self.update_rate('overall', date, np.nan)
+
